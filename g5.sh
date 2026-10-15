@@ -3,7 +3,7 @@
 set -u; cd /root
 F=https://github.com/EngineeringWithJay/prism-releases/releases/download/prism-b10777-e3de715
 HF=https://huggingface.co/prism-ml/Ternary-Bonsai-27B-gguf/resolve/main
-[ -x llama-bench ] || [ -x bin/llama-bench ] || { curl -sL https://github.com/EngineeringWithJay/prism-releases/releases/download/prism-b10777-e3de715/llama-prism-b10777-e3de715-bin-linux-cuda-12.4-x64.tar.gz|tar xz; }
+[ -x llama-bench ] || [ -x bin/llama-bench ] || { curl -sL https://github.com/PrismML-Eng/llama.cpp/releases/download/prism-b10777-e3de715/llama-prism-b10777-e3de715-bin-linux-cuda-12.4-x64.tar.gz|tar xz; }
 [ -f PQ2_0.gguf ] || curl -sL $HF/Ternary-Bonsai-27B-PQ2_0.gguf -o PQ2_0.gguf
 [ -f Q2_g64.gguf ] || curl -sL $HF/Ternary-Bonsai-27B-Q2_g64.gguf -o Q2_g64.gguf
 B=/home/dst/Ternary-Bonsai-27B-Q1_0.gguf
