@@ -3,8 +3,13 @@ set -u; cd /root
 M="$1"
 SRV=$(find /root -maxdepth 3 -name llama-server -type f | head -1)
 [ -n "$SRV" ] || { echo NO_SERVER; exit 1; }
+[ -f $M.gguf ] || { echo NO_MODEL_$M; exit 1; }
+python3 -c "from datasets import load_from_disk; load_from_disk('/root/math500')" >/dev/null 2>&1 || { echo NO_DATASET; exit 1; }
 "$SRV" -m $M.gguf --host 127.0.0.1 --port 8080 -ngl 99 -c 3072 > server_$M.log 2>&1 &
 SPID=$!
-until curl -s http://127.0.0.1:8080/health | grep -q ok; do sleep 5; done
+OK=0
+for i in $(seq 1 72); do curl -s http://127.0.0.1:8080/health | grep -q ok && { OK=1; break; }; kill -0 $SPID 2>/dev/null || break; sleep 5; done
+if [ "$OK" != 1 ]; then echo SERVER_FAIL; tail -5 server_$M.log; exit 1; fi
 python3 g1_eval.py $M out_$M 2>&1 | tee eval_$M.log
 kill $SPID 2>/dev/null || true
+echo EVAL_DONE_$M
