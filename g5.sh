@@ -12,7 +12,7 @@ for t in PQ2_0 Q2_g64 Q1_0; do
   for m in "512 128" "4096 256"; do
     set -- $m
     echo "### $t -p $1 -n $2"
-    $BIN -m $t.gguf -ngl 99 -p $1 -n $2 -r 1 -o csv 2>&1 | sed -n '2,6p'
+    $BIN -m $t.gguf -ngl 99 -p $1 -n $2 -r 3 -o csv 2>&1
   done
 done
 sha256sum *.gguf | cut -c1-16
