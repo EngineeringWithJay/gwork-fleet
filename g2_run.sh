@@ -1,6 +1,6 @@
 #!/bin/bash
 set -u; cd /root
-NEW=https://github.com/EngineeringWithJay/prism-releases/releases/download/prism-b10777-e3de715/llama-prism-b10777-e3de715-bin-linux-cuda-12.4-x64.tar.gz
+NEW=https://github.com/PrismML-Eng/llama.cpp/releases/download/prism-b10777-e3de715/llama-prism-b10777-e3de715-bin-linux-cuda-12.4-x64.tar.gz
 [ -x bin/llama-server ] || { curl -sL $NEW | tar xz; }
 SRV=$(find /root -name llama-server -type f | head -1); BINDIR=$(dirname $SRV)
 echo "SRV=$SRV"; $SRV --help 2>&1 | grep -iE 'drafter|model-draft' | head -4
