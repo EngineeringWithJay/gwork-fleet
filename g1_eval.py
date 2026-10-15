@@ -10,13 +10,22 @@ from datasets import load_from_disk, load_dataset
 MODEL = sys.argv[1]; OUT = Path(sys.argv[2]); OUT.mkdir(exist_ok=True)
 PORT = 8080
 
-try:
-    dd = load_from_disk("/root/math500")
-    _rows = dd["train"] if "train" in dd else dd[list(dd.keys())[0]]
-except Exception:
-    files = sorted(glob.glob("/root/math500/**/*.parquet", recursive=True))
-    _rows = load_dataset("parquet", data_files=files, split="train")
-rows = list(_rows)
+def _load():
+    try:
+        dd = load_from_disk("/root/math500")
+        return dd["train"] if "train" in dd else dd[list(dd.keys())[0]]
+    except Exception as e1:
+        print("load_from_disk failed:", repr(e1)[:100], flush=True)
+    try:
+        files = sorted(glob.glob("/root/math500/**/*.parquet", recursive=True))
+        print("local parquet files:", len(files), flush=True)
+        if files:
+            return load_dataset("parquet", data_files=files, split="train")
+    except Exception as e2:
+        print("local parquet failed:", repr(e2)[:100], flush=True)
+    d = load_dataset("HuggingFaceH4/MATH-500")
+    return d["test"] if "test" in d else d[list(d.keys())[0]]
+rows = list(_load())
 print(f"MATH500 rows={len(rows)}", flush=True)
 
 def ask(text, timeout=600):
